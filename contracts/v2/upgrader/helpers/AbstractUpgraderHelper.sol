@@ -47,6 +47,6 @@ abstract contract AbstractUpgraderHelper is Ownable {
      * @notice Tear down the contract (self-destruct)
      */
     function tearDown() external onlyOwner {
-        selfdestruct(msg.sender);
+        // selfdestruct(msg.sender);
     }
 }
