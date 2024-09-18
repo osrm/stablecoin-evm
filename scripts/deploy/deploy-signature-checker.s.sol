@@ -14,9 +14,9 @@ contract DeployLibrary is Script {
     function run() external {
         vm.startBroadcast();
 
-        // Deploy the library
-        new SignatureChecker();
-        // console.log("SignatureChecker deployed at:", address(checker));
+        // Deploy library
+        SignatureChecker signatureChecker = new SignatureChecker();
+        console.log("SignatureChecker deployed at:", address(signatureChecker));
 
         vm.stopBroadcast();
     }
