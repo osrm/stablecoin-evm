@@ -27,7 +27,7 @@ import { MasterMinter } from "../../contracts/minting/MasterMinter.sol";
  * @dev Make sure to update the MINTER constant with the new minter address
  */
 contract AddNewMinter is Script {
-    address private constant MINTER = vm.envAddress("MINTER_ADDRESS"); // New minter to add
+    address private minter;
     MasterMinter private masterMinter;
     uint256 private deployerPrivateKey;
 
@@ -36,6 +36,7 @@ contract AddNewMinter is Script {
      */
     function setUp() public {
         masterMinter = MasterMinter(vm.envAddress("MASTER_MINTER_ADDRESS"));
+        minter = vm.envAddress("MINTER_ADDRESS"); // New minter
         deployerPrivateKey = vm.envUint("DEPLOYER_PRIVATE_KEY");
         console.log("MASTER_MINTER_ADDRESS: '%s'", address(masterMinter));
     }
@@ -48,7 +49,7 @@ contract AddNewMinter is Script {
         vm.startBroadcast(deployerPrivateKey);
         masterMinter.configureController(
             vm.addr(deployerPrivateKey), // controller
-            MINTER // worker
+            minter // worker
         );
         masterMinter.configureMinter(type(uint256).max); // allowance that the minter can mint
         vm.stopBroadcast();
