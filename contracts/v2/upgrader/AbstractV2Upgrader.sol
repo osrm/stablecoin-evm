@@ -115,6 +115,6 @@ abstract contract AbstractV2Upgrader is Ownable {
      */
     function tearDown() internal {
         _helper.tearDown();
-        selfdestruct(msg.sender);
+        // selfdestruct(msg.sender);
     }
 }

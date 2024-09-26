@@ -1,15 +1,15 @@
 {
   "name": "stablecoin-evm",
   "version": "1.0.0",
-  "description": "Circle's Stablecoin Smart Contracts on EVM-compatible blockchains",
+  "description": "Circle's Stablecoin Smart Contracts on EVM-compatible blockchains (modified to work on ZK Sync",
   "directories": {
     "test": "test"
   },
   "scripts": {
-    "compile": "hardhat compile && forge build && ./flatten-generated-types.sh",
+    "compile": "hardhat compile && forge build --zksync && ./flatten-generated-types.sh",
     "contract-size": "hardhat size-contracts",
     "coverage": "hardhat coverage",
-    "forge:simulate": "forge script -vv --gas-estimate-multiplier $(dotenv -p GAS_MULTIPLIER)",
+    "forge:simulate": "forge script -vvvv --libraries ./contracts/util/SignatureChecker.sol:SignatureChecker:$(dotenv -p SIGNATURE_CHECKER_ADDRESS) --slow --zksync",
     "forge:broadcast": "yarn forge:simulate --broadcast",
     "forge:broadcastAndVerify": "yarn forge:broadcast --verify --etherscan-api-key $(dotenv -p ETHERSCAN_KEY)",
     "forge:verify": "yarn forge:simulate --verify --resume --etherscan-api-key $(dotenv -p ETHERSCAN_KEY) --private-key $(dotenv -p DEPLOYER_PRIVATE_KEY)",
