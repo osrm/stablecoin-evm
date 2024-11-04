@@ -15,8 +15,7 @@ contract DeployLibrary is Script {
         vm.startBroadcast();
 
         // Deploy library
-        SignatureChecker signatureChecker = new SignatureChecker();
-        console.log("SignatureChecker deployed at:", address(signatureChecker));
+        new SignatureChecker();
 
         vm.stopBroadcast();
     }

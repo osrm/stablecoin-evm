@@ -28,7 +28,7 @@ then
 fi
 
 echo "Installing / Updating Foundry..."
-if ! command -v foundryup &> /dev/null
+if ! command -v foundryup-zksync &> /dev/null
 then
   echo "Installing foundryup..."
   curl -L https://foundry.paradigm.xyz | bash

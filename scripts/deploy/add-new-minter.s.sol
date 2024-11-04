@@ -28,6 +28,7 @@ import { MasterMinter } from "../../contracts/minting/MasterMinter.sol";
  */
 contract AddNewMinter is Script {
     address private minter;
+    address private owner;
     MasterMinter private masterMinter;
     uint256 private deployerPrivateKey;
 
@@ -35,8 +36,9 @@ contract AddNewMinter is Script {
      * @notice initialize variables from environment
      */
     function setUp() public {
+        owner = vm.envAddress("OWNER_ADDRESS");
         masterMinter = MasterMinter(vm.envAddress("MASTER_MINTER_ADDRESS"));
-        minter = vm.envAddress("MINTER_ADDRESS"); // New minter
+        minter = vm.envOr("MINTER_ADDRESS", owner); // New minter
         deployerPrivateKey = vm.envUint("DEPLOYER_PRIVATE_KEY");
         console.log("MASTER_MINTER_ADDRESS: '%s'", address(masterMinter));
     }
