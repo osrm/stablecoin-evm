@@ -51,7 +51,7 @@ available, but can only be called once per proxy.
    For details on what these roles can do, see the
    [Token Design Doc](tokendesign.md)
 
-2. Deploy [FiatTokenProxy](../contracts/FiatTokenProxy.sol), passing the address
+2. Deploy [FiatTokenProxy](../contracts/v1/FiatTokenProxy.sol), passing the address
    of the deployed implementation contract to the constructor, which will
    initialize the `_implementation` field.
 
