@@ -20,6 +20,7 @@ by the [Hardhat](https://hardhat.org/) framework.
   - [TypeScript type definition files for the contracts](#typescript-type-definition-files-for-the-contracts)
   - [Linting and Formatting](#linting-and-formatting)
   - [Testing](#testing)
+- [ZK Sync Deployment](#zk-sync-deployment)
 - [Deployment](#deployment)
 - [Contracts](#contracts)
 - [FiatToken features](#fiattoken-features)
@@ -117,7 +118,7 @@ To check the size of contracts in the repo, run the following command.
 $ yarn contract-size # Ignores tests
 ```
 
-## Deployment
+## ZK Sync Deployment
 
 1. Create a copy of the file `.env.example`, and name it `.env`. Fill in
    appropriate values in the `.env` file. This file must not be checked into the
@@ -150,6 +151,45 @@ yarn forge:broadcast scripts/deploy/deploy-fiat-token.s.sol --rpc-url <testnet O
 ```
 
 6. Verify the contracts on an Etherscan flavored block explorer by running the
+   following command. Ensure that `ETHERSCAN_KEY` is set in the `.env` file.
+
+```sh
+yarn forge:verify scripts/deploy/deploy-fiat-token.s.sol --rpc-url <testnet OR mainnet>
+```
+
+## Deployment
+
+1. Create a copy of the file `.env.example`, and name it `.env`. Fill in
+   appropriate values in the `.env` file. This file must not be checked into the
+   repository.
+
+```sh
+cp .env.example .env
+```
+
+2. Create a `blacklist.remote.json` file and populate it with a list of
+   addresses to be blacklisted. This file must not be checked into the
+   repository.
+
+```sh
+echo "[]" > blacklist.remote.json
+```
+
+3. Deploy Signature Checker
+
+```
+yarn forge:deploySignatureChecker --rpc-url <testnet OR mainnet>
+```
+
+3. Update SIGNATURE_CHECKER_ADDRESS on .env file with the deployed address.
+
+4. Deploy rest of the contracts by running the following command
+
+```sh
+yarn forge:broadcastAndVerify scripts/deploy/deploy-fiat-token.s.sol --rpc-url <testnet OR mainnet>
+```
+
+1. Verify the contracts on an Etherscan flavored block explorer by running the
    following command. Ensure that `ETHERSCAN_KEY` is set in the `.env` file.
 
 ```sh

@@ -67,6 +67,7 @@ contract DeployFiatToken is Script, DeployImpl {
         blacklister = vm.envOr("BLACKLISTER_ADDRESS", owner);
 
         deployerPrivateKey = vm.envUint("DEPLOYER_PRIVATE_KEY");
+        // paymaster = vm.envAddress("PAYMASTER_ADDRESS");
 
         console.log("TOKEN_NAME: '%s'", tokenName);
         console.log("TOKEN_SYMBOL: '%s'", tokenSymbol);
@@ -100,24 +101,29 @@ contract DeployFiatToken is Script, DeployImpl {
         // Otherwise, deploy the latest implementation contract code to the network.
         FiatTokenV2_2 fiatTokenV2_2 = getOrDeployImpl(_impl);
 
+        _usePaymaster();
         FiatTokenProxy proxy = new FiatTokenProxy(address(fiatTokenV2_2));
 
-        // Now that the proxy contract has been deployed, we can deploy the master minter.
+        // // Now that the proxy contract has been deployed, we can deploy the master minter.
+        _usePaymaster();
         MasterMinter masterMinter = new MasterMinter(address(proxy));
 
         // Change the master minter to be owned by the master minter owner
+        _usePaymaster();
         masterMinter.transferOwnership(masterMinterOwner);
 
         // Now that the master minter is set up, we can go back to setting up the proxy and
         // implementation contracts.
         // Need to change admin first, or the call to initialize won't work
         // since admin can only call methods in the proxy, and not forwarded methods
+        _usePaymaster();
         proxy.changeAdmin(proxyAdmin);
 
         // Do the initial (V1) initialization.
         // Note that this takes in the master minter contract's address as the master minter.
         // The master minter contract's owner is a separate address.
         FiatTokenV2_2 proxyAsV2_2 = FiatTokenV2_2(address(proxy));
+        _usePaymaster();
         proxyAsV2_2.initialize(
             tokenName,
             tokenSymbol,
@@ -130,12 +136,15 @@ contract DeployFiatToken is Script, DeployImpl {
         );
 
         // Do the V2 initialization
+        _usePaymaster();
         proxyAsV2_2.initializeV2(tokenName);
 
         // Do the V2_1 initialization
+        _usePaymaster();
         proxyAsV2_2.initializeV2_1(owner);
 
         // Do the V2_2 initialization
+        _usePaymaster();
         proxyAsV2_2.initializeV2_2(new address[](0), tokenSymbol);
 
         vm.stopBroadcast();

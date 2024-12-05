@@ -22,12 +22,31 @@ import { FiatTokenV2_2 } from "../../contracts/v2/FiatTokenV2_2.sol";
 import {
     FiatTokenCeloV2_2
 } from "../../contracts/v2/celo/FiatTokenCeloV2_2.sol";
+import { Script } from "forge-std/Script.sol";
 
 /**
  * @notice A utility contract that exposes a re-useable getOrDeployImpl function.
  */
-contract DeployImpl {
+contract DeployImpl is Script {
     address private immutable THROWAWAY_ADDRESS = address(1);
+
+    function _usePaymaster() internal {
+        address paymaster = vm.envAddress("PAYMASTER_ADDRESS");
+
+        // Use paymaster
+        bytes memory paymaster_encoded_input = abi.encodeWithSelector(
+            bytes4(keccak256("general(bytes)")),
+            bytes("0x")
+        );
+        (bool success, ) = address(vm).call(
+            abi.encodeWithSignature(
+                "zkUsePaymaster(address,bytes)",
+                paymaster,
+                paymaster_encoded_input
+            )
+        );
+        require(success, "zkUsePaymaster() call failed");
+    }
 
     /**
      * @notice helper function that either
@@ -41,12 +60,14 @@ contract DeployImpl {
         FiatTokenV2_2 fiatTokenV2_2;
 
         if (impl == address(0)) {
+            _usePaymaster();
             fiatTokenV2_2 = new FiatTokenV2_2();
 
             // Initializing the implementation contract with dummy values here prevents
             // the contract from being reinitialized later on with different values.
             // Dummy values can be used here as the proxy contract will store the actual values
             // for the deployed token.
+            _usePaymaster();
             fiatTokenV2_2.initialize(
                 "",
                 "",
@@ -57,8 +78,11 @@ contract DeployImpl {
                 THROWAWAY_ADDRESS,
                 THROWAWAY_ADDRESS
             );
+            _usePaymaster();
             fiatTokenV2_2.initializeV2("");
+            _usePaymaster();
             fiatTokenV2_2.initializeV2_1(THROWAWAY_ADDRESS);
+            _usePaymaster();
             fiatTokenV2_2.initializeV2_2(new address[](0), "");
         } else {
             fiatTokenV2_2 = FiatTokenV2_2(impl);

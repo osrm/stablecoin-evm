@@ -38,7 +38,7 @@ jobs:
         uses: ./.github/composite-actions/setup-ci
 
       - name: Compile contracts
-        run: yarn compile
+        run: yarn hardhat compile
 
       - name: Run static checks
         run: yarn static-check
@@ -75,7 +75,7 @@ jobs:
         uses: ./.github/composite-actions/setup-ci
 
       - name: Compile contracts
-        run: yarn compile
+        run: yarn hardhat compile
 
       - name: Run hardhat tests
         run: HARDHAT_TEST_GREP='${{ matrix.test-groups.grep }}' HARDHAT_TEST_INVERT='${{ matrix.test-groups.invert }}' yarn test
